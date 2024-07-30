@@ -1,7 +1,10 @@
 {
   "name": "my-fetch",
   "version": "1.0.0",
-  "scripts": {},
+  "scripts": {
+    "start": "node build/index.js",
+    "build": "tsc"
+  },
   "devDependencies": {
     "typescript": "^5.5.4"
   }
