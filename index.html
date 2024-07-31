@@ -9,8 +9,26 @@
       :root {
         background-color: #222;
         color: #f4f4f4;
+        margin: 1rem;
+        font-family: sans-serif;
       }
     </style>
   </head>
-  <body></body>
+  <body>
+    <h1>Getting posts using myFetch</h1>
+    <form id="get-posts">
+      <button type="submit">Get Posts!</button>
+    </form>
+    <form id="create-post">
+      <input type="text" name="title" placeholder="Title" />
+      <input type="text" name="body" placeholder="Body" />
+      <button type="submit">Create Post!</button>
+    </form>
+    <main>
+      <h1>Posts</h1>
+      <div id="posts"></div>
+      <h1>Created posts</h1>
+      <div id="created-posts"></div>
+    </main>
+  </body>
 </html>
