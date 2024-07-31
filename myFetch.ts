@@ -1,28 +1,41 @@
-type Resource = string | URL;
-type Options = {
-  method?:
-    | 'GET'
-    | 'POST'
-    | 'PUT'
-    | 'DELETE'
-    | 'HEAD'
-    | 'CONNECT'
-    | 'OPTIONS'
-    | 'TRACE'
-    | 'PATCH';
-};
-
 export function myFetch(
-  resource: Resource,
-  options?: Options
+  resource: string | URL | Request,
+  options?: RequestInit
 ): Promise<Response> {
-  return new Promise((resolve, reject) => {
-    const req = new XMLHttpRequest();
+  return new Promise<Response>((resolve, reject) => {
+    const request = new XMLHttpRequest();
 
-    req.addEventListener('load', (event) => {
-      resolve(new Response(req.responseText, { status: req.status }));
+    request.addEventListener('load', () =>
+      resolve(
+        new Response(request.responseText, {
+          status: request.status,
+          statusText: request.statusText,
+        })
+      )
+    );
+
+    request.addEventListener('error', () => {
+      reject(request.statusText);
     });
-    req.open(options?.method ?? 'GET', resource);
-    req.send();
+
+    const url = resource instanceof Request ? resource.url : resource;
+
+    try {
+      request.open(options?.method ?? 'GET', url, true);
+
+      for (const header in options?.headers) {
+        if (options?.headers.hasOwnProperty(header)) {
+          const value = options?.headers[header as keyof HeadersInit];
+          request.setRequestHeader(header, value as string);
+        }
+      }
+
+      const body =
+        options?.body instanceof ReadableStream ? null : options?.body;
+
+      request.send(body);
+    } catch (error) {
+      reject(error);
+    }
   });
 }
